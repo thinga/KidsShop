@@ -1,5 +1,6 @@
 
 using System;
+using API.Helpers;
 using Core.Interfaces;
 using Infrastructure.Data;
 using Microsoft.AspNetCore.Builder;
@@ -15,6 +16,8 @@ var builder = WebApplication.CreateBuilder(args); // Standartsatz von Protokolli
 
 builder.Services.AddControllers();
 
+builder.Services.AddScoped(typeof(IGenericRepository<>),typeof(GenericRepository<>));
+builder.Services.AddAutoMapper(typeof(MappingProfiles));
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddDbContext<StoreContext>(x => x.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
@@ -37,6 +40,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+app.UseStaticFiles();
 
 using var scope = app.Services.CreateScope();
 var services = scope.ServiceProvider;
